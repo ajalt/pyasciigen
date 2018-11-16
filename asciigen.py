@@ -61,10 +61,10 @@ Module usage:
                                 ....
 '''
 
-import Image
-import ImageFont
-import ImageDraw
-import ImageEnhance
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+from PIL import ImageEnhance
 import string
 import collections
 
@@ -81,7 +81,7 @@ def char_density(c, font=font):
 
 # Sort printable characters according to the number of black pixels present.
 # Don't use string.printable, since we don't want any whitespace except spaces.
-chars = list(sorted(string.letters + string.digits + string.punctuation + ' ', key=char_density, reverse=True))
+chars = list(sorted(string.ascii_letters + string.digits + string.punctuation + ' ', key=char_density, reverse=True))
 
 char_width, char_height = ImageFont.load_default().getsize('X')
 
@@ -96,8 +96,8 @@ def generate_art(image, width=None, height=None):
     image = image.resize((width, height), Image.ANTIALIAS).convert('L')
 
     pix = image.load()
-    for y in xrange(height):
-        for x in xrange(width):
+    for y in range(height):
+        for x in range(width):
             yield chars[int(pix[x, y] / 255. * (len(chars) - 1) + 0.5)]
         yield '\n'
         
@@ -132,5 +132,5 @@ if __name__ == '__main__':
                         help='Brightness ratio to apply to image. (1.0 is original image, > 1.0 is high brightness)')
     
     args = parser.parse_args()
-    print from_filename(args.image, args.width, args.brightness, args.contrast)
+    print(from_filename(args.image, args.width, args.brightness, args.contrast))
 
