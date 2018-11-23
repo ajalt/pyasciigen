@@ -1,12 +1,9 @@
 '''ASCII Art generator
-
 Command line usage: asciigen.py [-h] [--width WIDTH] [--contrast RATIO]
                                 [--brightness RATIO]
                                 image
-
 positional arguments:
   image                 Image file to read.
-
 optional arguments:
   -h, --help            show this help message and exit
   --width WIDTH, -w WIDTH
@@ -19,11 +16,9 @@ optional arguments:
                         image, > 1.0 is high brightness)
                         
                         
-
 Module usage:
 >>> import asciigen
 >>> asciigen.from_filename('./python-logo.png', width=40, contrast=1.8)
-
                        ......          .....
                      .        .-~~~~,        ..
                     . :!L1MZ9DN8p000bND@GMn{-  .
@@ -61,10 +56,10 @@ Module usage:
                                 ....
 '''
 
-import Image
-import ImageFont
-import ImageDraw
-import ImageEnhance
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw
+from PIL import ImageEnhance
 import string
 import collections
 
@@ -81,7 +76,7 @@ def char_density(c, font=font):
 
 # Sort printable characters according to the number of black pixels present.
 # Don't use string.printable, since we don't want any whitespace except spaces.
-chars = list(sorted(string.letters + string.digits + string.punctuation + ' ', key=char_density, reverse=True))
+chars = list(sorted(string.ascii_letters + string.digits + string.punctuation + ' ', key=char_density, reverse=True))
 
 char_width, char_height = ImageFont.load_default().getsize('X')
 
@@ -96,8 +91,8 @@ def generate_art(image, width=None, height=None):
     image = image.resize((width, height), Image.ANTIALIAS).convert('L')
 
     pix = image.load()
-    for y in xrange(height):
-        for x in xrange(width):
+    for y in range(height):
+        for x in range(width):
             yield chars[int(pix[x, y] / 255. * (len(chars) - 1) + 0.5)]
         yield '\n'
         
@@ -106,6 +101,21 @@ def from_filename(name, width=None, brightness=None, contrast=None):
     '''Open an image file and return a string of its ASCII Art.'''
     
     image = Image.open(name)
+    if width is not None:
+        scale = float(width) / image.size[0]
+    else:
+        scale = 1
+        
+    if contrast is not None:
+        image = ImageEnhance.Contrast(image).enhance(contrast)
+    if brightness is not None:
+        image = ImageEnhance.Brightness(image).enhance(brightness)
+        
+    return ''.join(generate_art(image, int(image.size[0] * scale), int(image.size[1] * scale)))
+
+def from_image(image, width=None, brightness=None, contrast=None):
+    '''Receive an PIL image and return a string of its ASCII Art.'''
+    
     if width is not None:
         scale = float(width) / image.size[0]
     else:
@@ -132,5 +142,4 @@ if __name__ == '__main__':
                         help='Brightness ratio to apply to image. (1.0 is original image, > 1.0 is high brightness)')
     
     args = parser.parse_args()
-    print from_filename(args.image, args.width, args.brightness, args.contrast)
-
+    print(from_filename(args.image, args.width, args.brightness, args.contrast))
