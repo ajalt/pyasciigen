@@ -142,4 +142,4 @@ if __name__ == '__main__':
                         help='Brightness ratio to apply to image. (1.0 is original image, > 1.0 is high brightness)')
     
     args = parser.parse_args()
-print(from_filename(args.image, args.width, args.brightness, args.contrast))
+    print(from_filename(args.image, args.width, args.brightness, args.contrast))
