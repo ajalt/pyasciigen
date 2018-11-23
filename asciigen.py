@@ -1,12 +1,9 @@
 '''ASCII Art generator
-
 Command line usage: asciigen.py [-h] [--width WIDTH] [--contrast RATIO]
                                 [--brightness RATIO]
                                 image
-
 positional arguments:
   image                 Image file to read.
-
 optional arguments:
   -h, --help            show this help message and exit
   --width WIDTH, -w WIDTH
@@ -19,11 +16,9 @@ optional arguments:
                         image, > 1.0 is high brightness)
                         
                         
-
 Module usage:
 >>> import asciigen
 >>> asciigen.from_filename('./python-logo.png', width=40, contrast=1.8)
-
                        ......          .....
                      .        .-~~~~,        ..
                     . :!L1MZ9DN8p000bND@GMn{-  .
@@ -118,6 +113,21 @@ def from_filename(name, width=None, brightness=None, contrast=None):
         
     return ''.join(generate_art(image, int(image.size[0] * scale), int(image.size[1] * scale)))
 
+def from_image(image, width=None, brightness=None, contrast=None):
+    '''Receive an PIL image and return a string of its ASCII Art.'''
+    
+    if width is not None:
+        scale = float(width) / image.size[0]
+    else:
+        scale = 1
+        
+    if contrast is not None:
+        image = ImageEnhance.Contrast(image).enhance(contrast)
+    if brightness is not None:
+        image = ImageEnhance.Brightness(image).enhance(brightness)
+        
+    return ''.join(generate_art(image, int(image.size[0] * scale), int(image.size[1] * scale)))
+
     
 if __name__ == '__main__':
     import argparse
@@ -132,5 +142,4 @@ if __name__ == '__main__':
                         help='Brightness ratio to apply to image. (1.0 is original image, > 1.0 is high brightness)')
     
     args = parser.parse_args()
-    print(from_filename(args.image, args.width, args.brightness, args.contrast))
-
+print(from_filename(args.image, args.width, args.brightness, args.contrast))
