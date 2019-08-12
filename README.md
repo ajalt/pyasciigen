@@ -1,12 +1,12 @@
-#pyasciigen
+# pyasciigen
 
-##Description
+## Description
 pyasciigen is a python module that generates ASCII Art from images.
 
-##Dependencies
+## Dependencies
 pyasciigen depends on the [Python Imaging Library](http://www.pythonware.com/products/pil/index.htm) for image loading.
 
-##License
+## License
 Copyright (c) 2012 AJ Alt
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
